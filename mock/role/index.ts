@@ -316,6 +316,14 @@ const adminList = [
           title: 'router.details',
           canTo: true
         }
+      },
+      {
+        path: 'request',
+        component: 'views/Function/Request',
+        name: 'Request',
+        meta: {
+          title: 'router.request'
+        }
       }
     ]
   },
@@ -360,6 +368,22 @@ const adminList = [
         name: 'UseCrudSchemas',
         meta: {
           title: 'useCrudSchemas'
+        }
+      },
+      {
+        path: 'useClipboard',
+        component: 'views/hooks/useClipboard',
+        name: 'UseClipboard',
+        meta: {
+          title: 'useClipboard'
+        }
+      },
+      {
+        path: 'useNetwork',
+        component: 'views/hooks/useNetwork',
+        name: 'UseNetwork',
+        meta: {
+          title: 'useNetwork'
         }
       }
     ]
@@ -621,11 +645,14 @@ const testList: string[] = [
   'function',
   '/function/multiple-tabs',
   '/function/multiple-tabs-demo/:id',
+  '/function/request',
   '/hooks',
   '/hooks/useWatermark',
   '/hooks/useTagsView',
   '/hooks/useValidator',
   '/hooks/useCrudSchemas',
+  '/hooks/useClipboard',
+  '/hooks/useNetwork',
   '/level',
   '/level/menu1',
   '/level/menu1/menu1-1',

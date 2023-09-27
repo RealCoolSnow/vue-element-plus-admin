@@ -358,6 +358,14 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           canTo: true,
           activeMenu: '/function/multiple-tabs'
         }
+      },
+      {
+        path: 'request',
+        component: () => import('@/views/Function/Request.vue'),
+        name: 'Request',
+        meta: {
+          title: t('router.request')
+        }
       }
     ]
   },
@@ -402,6 +410,22 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         name: 'UseCrudSchemas',
         meta: {
           title: 'useCrudSchemas'
+        }
+      },
+      {
+        path: 'useClipboard',
+        component: () => import('@/views/hooks/useClipboard.vue'),
+        name: 'UseClipboard',
+        meta: {
+          title: 'useClipboard'
+        }
+      },
+      {
+        path: 'useNetwork',
+        component: () => import('@/views/hooks/useNetwork.vue'),
+        name: 'UseNetwork',
+        meta: {
+          title: 'useNetwork'
         }
       }
     ]
