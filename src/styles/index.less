@@ -5,3 +5,20 @@
 .el-popup-parent--hidden {
   width: 100% !important;
 }
+
+.custom-hover {
+  display: flex;
+  height: 100%;
+  padding: 1px 10px 0;
+  cursor: pointer;
+  align-items: center;
+  transition: background var(--transition-time-02);
+}
+
+.custom-hover:hover {
+  background-color: var(--top-header-hover-color);
+}
+
+.dark .custom-hover:hover {
+  background-color: var(--el-bg-color-overlay);
+}

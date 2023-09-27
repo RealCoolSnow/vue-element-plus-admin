@@ -111,7 +111,7 @@ const schema = reactive<FormSchema[]>([
                   {t('login.login')}
                 </ElButton>
               </div>
-              <div class="w-[100%] mt-15px">
+              <div class="w-[100%] mt-[15px]">
                 <ElButton class="w-[100%]" onClick={toRegister}>
                   {t('login.register')}
                 </ElButton>

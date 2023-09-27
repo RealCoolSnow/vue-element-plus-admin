@@ -234,7 +234,7 @@ export const useRenderLayout = () => {
     return (
       <>
         <div class="flex items-center bg-[var(--top-header-bg-color)] relative layout-border__bottom">
-          {logo.value ? <Logo class="custom-hover !pr-15px"></Logo> : undefined}
+          {logo.value ? <Logo class="custom-hover !pr-[15px]"></Logo> : undefined}
 
           <ToolHeader class="flex-1"></ToolHeader>
         </div>
