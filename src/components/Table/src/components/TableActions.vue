@@ -60,7 +60,7 @@ export default defineComponent({
 
     return () => (
       <>
-        <div class="text-right h-28px flex items-center justify-end">
+        <div class="text-right h-[28px] flex items-center justify-end">
           <ElTooltip content={t('common.refresh')} placement="top">
             <span onClick={refresh}>
               <Icon
@@ -79,7 +79,7 @@ export default defineComponent({
                     <span>
                       <Icon
                         icon="ant-design:column-height-outlined"
-                        class="cursor-pointer mr-8px ml-8px"
+                        class="cursor-pointer mr-[8px] ml-[8px]"
                         hover-color="var(--el-color-primary)"
                       />
                     </span>

@@ -94,8 +94,8 @@ function handleShowForm(show = false) {
       <div :class="`${prefixCls}-entry`" v-show="!showDate">
         <div :class="`${prefixCls}-entry-content`">
           <div class="flex flex-col items-center">
-            <img src="@/assets/imgs/avatar.jpg" alt="" class="w-70px h-70px rounded-[50%]" />
-            <span class="text-14px my-10px text-[var(--logo-title-text-color)]">Archer</span>
+            <img src="@/assets/imgs/avatar.jpg" alt="" class="w-[70px] h-[70px] rounded-[50%]" />
+            <span class="text-[14px] my-[10px] text-[var(--logo-title-text-color)]">Archer</span>
           </div>
           <ElInput
             type="password"
@@ -103,7 +103,7 @@ function handleShowForm(show = false) {
             class="enter-x"
             v-model="password"
           />
-          <span :class="`text-14px ${prefixCls}-entry__err-msg enter-x`" v-if="errMsg">
+          <span :class="`text-[14px] ${prefixCls}-entry__err-msg enter-x`" v-if="errMsg">
             {{ t('lock.message') }}
           </span>
           <div :class="`${prefixCls}-entry__footer enter-x`">

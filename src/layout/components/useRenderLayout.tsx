@@ -187,7 +187,7 @@ export const useRenderLayout = () => {
           ]}
         >
           {logo.value ? <Logo class="custom-hover"></Logo> : undefined}
-          <Menu class="flex-1 px-10px h-[var(--top-tool-height)]"></Menu>
+          <Menu class="flex-1 px-[10px] h-[var(--top-tool-height)]"></Menu>
           <ToolHeader></ToolHeader>
         </div>
         <div

@@ -1,6 +1,4 @@
-// 引入windi css
-import '@/plugins/unocss'
-
+import '@/styles/tailwind.css'
 // 导入全局的svg图标
 import '@/plugins/svgIcon'
 

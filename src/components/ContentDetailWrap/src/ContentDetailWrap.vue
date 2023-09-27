@@ -15,8 +15,8 @@ defineProps({
 
 <template>
   <div :class="[`${prefixCls}-container`, 'relative']">
-    <ElCard :class="[`${prefixCls}-body`, 'mb-20px']" shadow="never">
-      <div class="mb-20px pb-20px" style="border-bottom: 1px solid var(--el-border-color)">
+    <ElCard :class="[`${prefixCls}-body`, 'mb-[20px]']" shadow="never">
+      <div class="mb-[20px] pb-[20px]" style="border-bottom: 1px solid var(--el-border-color)">
         <slot name="header"></slot>
       </div>
       <slot></slot>

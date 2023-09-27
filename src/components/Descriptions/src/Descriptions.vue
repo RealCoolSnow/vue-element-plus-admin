@@ -83,11 +83,13 @@ export default defineComponent({
             <div
               class={[
                 `${prefixCls}-header`,
-                'relative h-50px flex justify-between items-center layout-border__bottom px-10px cursor-pointer'
+                'relative h-[50px] flex justify-between items-center layout-border__bottom px-[10px] cursor-pointer'
               ]}
               onClick={toggleClick}
             >
-              <div class={[`${prefixCls}-header__title`, 'relative font-18px font-bold ml-10px']}>
+              <div
+                class={[`${prefixCls}-header__title`, 'relative text-[18px] font-bold ml-[10px]']}
+              >
                 <div class="flex items-center">
                   {props.title}
                   {props.message ? (

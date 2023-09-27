@@ -68,16 +68,16 @@ const dialogStyle = computed(() => {
     :show-close="false"
   >
     <template #header="{ close }">
-      <div class="flex justify-between items-center h-54px pl-15px pr-15px relative">
+      <div class="flex justify-between items-center h-[54px] pl-[15px] pr-[15px] relative">
         <slot name="title">
           {{ title }}
         </slot>
         <div
-          class="h-54px flex justify-between items-center absolute top-[50%] right-15px translate-y-[-50%]"
+          class="h-[54px] flex justify-between items-center absolute top-[50%] right-[15px] translate-y-[-50%]"
         >
           <Icon
             v-if="fullscreen"
-            class="cursor-pointer is-hover !h-54px mr-10px"
+            class="cursor-pointer is-hover !h-[54px] mr-[10px]"
             :icon="isFullscreen ? 'radix-icons:exit-full-screen' : 'radix-icons:enter-full-screen'"
             color="var(--el-color-info)"
             hover-color="var(--el-color-primary)"

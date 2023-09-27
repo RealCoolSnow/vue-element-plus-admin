@@ -57,7 +57,7 @@ const getPasswordStrength = computed(() => {
     <div
       v-if="strength"
       :class="`${prefixCls}__bar`"
-      class="relative h-6px mt-10px mb-6px mr-auto ml-auto"
+      class="relative h-[6px] mt-[10px] mb-[6px] mr-auto ml-auto"
     >
       <div :class="`${prefixCls}__bar--fill`" :data-score="getPasswordStrength"></div>
     </div>

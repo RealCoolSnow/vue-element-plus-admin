@@ -141,7 +141,7 @@ export default defineComponent({
         id={`${variables.namespace}-menu`}
         class={[
           prefixCls,
-          'relative bg-[var(--left-menu-bg-color)] top-1px z-3000 layout-border__right',
+          'relative bg-[var(--left-menu-bg-color)] top-[1px] z-3000 layout-border__right',
           {
             'w-[var(--tab-menu-max-width)]': !unref(collapse),
             'w-[var(--tab-menu-min-width)]': unref(collapse)
@@ -165,7 +165,7 @@ export default defineComponent({
                   <div
                     class={[
                       `${prefixCls}__item`,
-                      'text-center text-12px relative py-12px cursor-pointer',
+                      'text-center text-[12px] relative py-[12px] cursor-pointer',
                       {
                         'is-active': isActive(v.path)
                       }
@@ -178,7 +178,7 @@ export default defineComponent({
                       <Icon icon={item?.meta?.icon}></Icon>
                     </div>
                     {!unref(showTitle) ? undefined : (
-                      <p class="break-words mt-5px px-2px">{t(item.meta?.title)}</p>
+                      <p class="break-words mt-[5px] px-[2px]">{t(item.meta?.title)}</p>
                     )}
                   </div>
                 )
