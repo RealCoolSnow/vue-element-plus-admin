@@ -2,13 +2,12 @@
 import Write from './components/Write.vue'
 import { ContentDetailWrap } from '@/components/ContentDetailWrap'
 import { ref, unref } from 'vue'
-import { ElButton } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useRouter } from 'vue-router'
 import { saveTableApi } from '@/api/table'
-import { useEmitt } from '@/hooks/event/useEmitt'
+import { useEventBus } from '@/hooks/event/useEventBus'
 
-const { emitter } = useEmitt()
+const { emit } = useEventBus()
 
 const { push, go } = useRouter()
 
@@ -29,7 +28,7 @@ const save = async () => {
         loading.value = false
       })
     if (res) {
-      emitter.emit('getList', 'add')
+      emit('getList', 'add')
       push('/example/example-page')
     }
   }
@@ -41,13 +40,13 @@ const save = async () => {
     <Write ref="writeRef" />
 
     <template #header>
-      <ElButton @click="go(-1)">
+      <BaseButton @click="go(-1)">
         {{ t('common.back') }}
-      </ElButton>
-      <ElButton type="primary" :loading="loading" @click="save">
-        {{ t('exampleDemo.save') }}
-      </ElButton>
+      </BaseButton>
+      <BaseButton type="primary" :loading="loading" @click="save"
+        >{{ t('exampleDemo.save') }}
+      </BaseButton>
     </template>
   </ContentDetailWrap>
 </template>
-@/hooks/event/useEmitt
+@/hooks/event/useEventBus

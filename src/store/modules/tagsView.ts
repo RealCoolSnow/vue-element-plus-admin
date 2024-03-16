@@ -4,12 +4,7 @@ import { getRawRoute } from '@/utils/routerHelper'
 import { defineStore } from 'pinia'
 import { store } from '../index'
 import { findIndex } from '@/utils'
-import { useStorage } from '@/hooks/web/useStorage'
-import { useAppStoreWithOut } from './app'
-
-const appStore = useAppStoreWithOut()
-
-const { getStorage } = useStorage()
+import { useUserStoreWithOut } from './user'
 
 export interface TagsViewState {
   visitedViews: RouteLocationNormalizedLoaded[]
@@ -95,8 +90,10 @@ export const useTagsViewStore = defineStore('tagsView', {
     },
     // 删除所有tag
     delAllVisitedViews() {
+      const userStore = useUserStoreWithOut()
+
       // const affixTags = this.visitedViews.filter((tag) => tag.meta.affix)
-      this.visitedViews = getStorage(appStore.getUserInfo)
+      this.visitedViews = userStore.getUserInfo
         ? this.visitedViews.filter((tag) => tag?.meta?.affix)
         : []
     },
@@ -157,7 +154,8 @@ export const useTagsViewStore = defineStore('tagsView', {
         }
       }
     }
-  }
+  },
+  persist: false
 })
 
 export const useTagsViewStoreWithOut = () => {

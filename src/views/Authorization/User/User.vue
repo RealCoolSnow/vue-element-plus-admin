@@ -3,7 +3,7 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table } from '@/components/Table'
 import { ref, unref, nextTick, watch, reactive } from 'vue'
-import { ElButton, ElTree, ElInput, ElDivider } from 'element-plus'
+import { ElTree, ElInput, ElDivider } from 'element-plus'
 import { getDepartmentApi, getUserByIdApi, saveUserApi, deleteUserByIdApi } from '@/api/department'
 import type { DepartmentItem, DepartmentUserItem } from '@/api/department/types'
 import { useTable } from '@/hooks/web/useTable'
@@ -11,7 +11,9 @@ import { Search } from '@/components/Search'
 import Write from './components/Write.vue'
 import Detail from './components/Detail.vue'
 import { Dialog } from '@/components/Dialog'
+import { getRoleListApi } from '@/api/role'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
+import { BaseButton } from '@/components/Button'
 
 const { t } = useI18n()
 
@@ -81,11 +83,12 @@ const crudSchemas = reactive<CrudSchema[]>([
     field: 'department.id',
     label: t('userDemo.department'),
     detail: {
-      slots: {
-        default: (data: DepartmentUserItem) => {
-          return <>{data.department.departmentName}</>
-        }
-      }
+      hidden: true
+      // slots: {
+      //   default: (data: DepartmentUserItem) => {
+      //     return <>{data.department.departmentName}</>
+      //   }
+      // }
     },
     search: {
       hidden: true
@@ -104,7 +107,7 @@ const crudSchemas = reactive<CrudSchema[]>([
       }
     },
     table: {
-      type: 'index'
+      hidden: true
     }
   },
   {
@@ -112,6 +115,22 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: t('userDemo.role'),
     search: {
       hidden: true
+    },
+    form: {
+      component: 'Select',
+      value: [],
+      componentProps: {
+        multiple: true,
+        collapseTags: true,
+        maxCollapseTags: 1
+      },
+      optionApi: async () => {
+        const res = await getRoleListApi()
+        return res.data?.list?.map((v) => ({
+          label: v.roleName,
+          value: v.id
+        }))
+      }
     }
   },
   {
@@ -153,15 +172,15 @@ const crudSchemas = reactive<CrudSchema[]>([
           const row = data.row as DepartmentUserItem
           return (
             <>
-              <ElButton type="primary" onClick={() => action(row, 'edit')}>
+              <BaseButton type="primary" onClick={() => action(row, 'edit')}>
                 {t('exampleDemo.edit')}
-              </ElButton>
-              <ElButton type="success" onClick={() => action(row, 'detail')}>
+              </BaseButton>
+              <BaseButton type="success" onClick={() => action(row, 'detail')}>
                 {t('exampleDemo.detail')}
-              </ElButton>
-              <ElButton type="danger" onClick={() => delData(row)}>
+              </BaseButton>
+              <BaseButton type="danger" onClick={() => delData(row)}>
                 {t('exampleDemo.del')}
-              </ElButton>
+              </BaseButton>
             </>
           )
         }
@@ -202,7 +221,7 @@ watch(
 )
 
 const currentChange = (data: DepartmentItem) => {
-  if (data.children) return
+  // if (data.children) return
   currentNodeKey.value = data.id
   currentPage.value = 1
   getList()
@@ -275,7 +294,7 @@ const save = async () => {
 
 <template>
   <div class="flex w-100% h-100%">
-    <ContentWrap class="flex-1">
+    <ContentWrap class="w-250px">
       <div class="flex justify-center items-center">
         <div class="flex-1">{{ t('userDemo.departmentList') }}</div>
         <ElInput
@@ -290,6 +309,7 @@ const save = async () => {
         ref="treeEl"
         :data="departmentList"
         default-expand-all
+        :expand-on-click-node="false"
         node-key="id"
         :current-node-key="currentNodeKey"
         :props="{
@@ -297,7 +317,16 @@ const save = async () => {
         }"
         :filter-node-method="filterNode"
         @current-change="currentChange"
-      />
+      >
+        <template #default="{ data }">
+          <div
+            :title="data.departmentName"
+            class="whitespace-nowrap overflow-ellipsis overflow-hidden"
+          >
+            {{ data.departmentName }}
+          </div>
+        </template>
+      </ElTree>
     </ContentWrap>
     <ContentWrap class="flex-[3] ml-20px">
       <Search
@@ -307,10 +336,10 @@ const save = async () => {
       />
 
       <div class="mb-10px">
-        <ElButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</ElButton>
-        <ElButton :loading="delLoading" type="danger" @click="delData()">
+        <BaseButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</BaseButton>
+        <BaseButton :loading="delLoading" type="danger" @click="delData()">
           {{ t('exampleDemo.del') }}
-        </ElButton>
+        </BaseButton>
       </div>
       <Table
         v-model:current-page="currentPage"
@@ -340,15 +369,15 @@ const save = async () => {
       />
 
       <template #footer>
-        <ElButton
+        <BaseButton
           v-if="actionType !== 'detail'"
           type="primary"
           :loading="saveLoading"
           @click="save"
         >
           {{ t('exampleDemo.save') }}
-        </ElButton>
-        <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>
+        </BaseButton>
+        <BaseButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</BaseButton>
       </template>
     </Dialog>
   </div>

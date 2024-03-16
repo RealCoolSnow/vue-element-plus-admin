@@ -1,11 +1,10 @@
 <script setup lang="tsx">
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, onMounted, unref } from 'vue'
 import { Form, FormSchema } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton, ElCheckbox, ElLink } from 'element-plus'
+import { ElCheckbox, ElLink } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
 import { loginApi, getTestRoleApi, getAdminRoleApi } from '@/api/login'
-import { useStorage } from '@/hooks/web/useStorage'
 import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
@@ -13,6 +12,8 @@ import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 import { UserType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
+import { useUserStore } from '@/store/modules/user'
+import { BaseButton } from '@/components/Button'
 
 const { required } = useValidator()
 
@@ -20,11 +21,11 @@ const emit = defineEmits(['to-register'])
 
 const appStore = useAppStore()
 
+const userStore = useUserStore()
+
 const permissionStore = usePermissionStore()
 
 const { currentRoute, addRoute, push } = useRouter()
-
-const { setStorage } = useStorage()
 
 const { t } = useI18n()
 
@@ -50,19 +51,19 @@ const schema = reactive<FormSchema[]>([
   {
     field: 'username',
     label: t('login.username'),
-    value: 'admin',
+    // value: 'admin',
     component: 'Input',
     colProps: {
       span: 24
     },
     componentProps: {
-      placeholder: t('login.usernamePlaceholder')
+      placeholder: 'admin or test'
     }
   },
   {
     field: 'password',
     label: t('login.password'),
-    value: 'admin',
+    // value: 'admin',
     component: 'InputPassword',
     colProps: {
       span: 24
@@ -71,7 +72,7 @@ const schema = reactive<FormSchema[]>([
       style: {
         width: '100%'
       },
-      placeholder: t('login.passwordPlaceholder')
+      placeholder: 'admin or test'
     }
   },
   {
@@ -107,14 +108,19 @@ const schema = reactive<FormSchema[]>([
           return (
             <>
               <div class="w-[100%]">
-                <ElButton loading={loading.value} type="primary" class="w-[100%]" onClick={signIn}>
+                <BaseButton
+                  loading={loading.value}
+                  type="primary"
+                  class="w-[100%]"
+                  onClick={signIn}
+                >
                   {t('login.login')}
-                </ElButton>
+                </BaseButton>
               </div>
               <div class="w-[100%] mt-15px">
-                <ElButton class="w-[100%]" onClick={toRegister}>
+                <BaseButton class="w-[100%]" onClick={toRegister}>
                   {t('login.register')}
-                </ElButton>
+                </BaseButton>
               </div>
             </>
           )
@@ -180,10 +186,21 @@ const schema = reactive<FormSchema[]>([
 
 const iconSize = 30
 
-const remember = ref(false)
+const remember = ref(userStore.getRememberMe)
+
+const initLoginInfo = () => {
+  const loginInfo = userStore.getLoginInfo
+  if (loginInfo) {
+    const { username, password } = loginInfo
+    setValues({ username, password })
+  }
+}
+onMounted(() => {
+  initLoginInfo()
+})
 
 const { formRegister, formMethods } = useForm()
-const { getFormData, getElFormExpose } = formMethods
+const { getFormData, getElFormExpose, setValues } = formMethods
 
 const loading = ref(false)
 
@@ -215,7 +232,17 @@ const signIn = async () => {
         const res = await loginApi(formData)
 
         if (res) {
-          setStorage(appStore.getUserInfo, res.data)
+          // 是否记住我
+          if (unref(remember)) {
+            userStore.setLoginInfo({
+              username: formData.username,
+              password: formData.password
+            })
+          } else {
+            userStore.setLoginInfo(undefined)
+          }
+          userStore.setRememberMe(unref(remember))
+          userStore.setUserInfo(res.data)
           // 是否使用动态路由
           if (appStore.getDynamicRouter) {
             getRole()
@@ -247,7 +274,7 @@ const getRole = async () => {
       : await getTestRoleApi(params)
   if (res) {
     const routers = res.data || []
-    setStorage('roleRouters', routers)
+    userStore.setRoleRouters(routers)
     appStore.getDynamicRouter && appStore.getServerDynamicRouter
       ? await permissionStore.generateRoutes('server', routers).catch(() => {})
       : await permissionStore.generateRoutes('frontEnd', routers).catch(() => {})

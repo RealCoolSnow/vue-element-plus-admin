@@ -4,13 +4,15 @@ import { getMenuListApi } from '@/api/menu'
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElButton, ElTag } from 'element-plus'
+import { ElTag } from 'element-plus'
 import { Icon } from '@/components/Icon'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
 import Write from './components/Write.vue'
+import Detail from './components/Detail.vue'
 import { Dialog } from '@/components/Dialog'
+import { BaseButton } from '@/components/Button'
 
 const { t } = useI18n()
 
@@ -34,7 +36,13 @@ const tableColumns = reactive<TableColumn[]>([
   },
   {
     field: 'meta.title',
-    label: t('menu.menuName')
+    label: t('menu.menuName'),
+    slots: {
+      default: (data: any) => {
+        const title = data.row.meta.title
+        return <>{title}</>
+      }
+    }
   },
   {
     field: 'meta.icon',
@@ -54,16 +62,16 @@ const tableColumns = reactive<TableColumn[]>([
       }
     }
   },
-  {
-    field: 'meta.permission',
-    label: t('menu.permission'),
-    slots: {
-      default: (data: any) => {
-        const permission = data.row.meta.permission
-        return permission ? <>{permission.join(', ')}</> : null
-      }
-    }
-  },
+  // {
+  //   field: 'meta.permission',
+  //   label: t('menu.permission'),
+  //   slots: {
+  //     default: (data: any) => {
+  //       const permission = data.row.meta.permission
+  //       return permission ? <>{permission.join(', ')}</> : null
+  //     }
+  //   }
+  // },
   {
     field: 'component',
     label: t('menu.component'),
@@ -102,10 +110,13 @@ const tableColumns = reactive<TableColumn[]>([
         const row = data.row
         return (
           <>
-            <ElButton type="primary" onClick={() => action(row, 'edit')}>
+            <BaseButton type="primary" onClick={() => action(row, 'edit')}>
               {t('exampleDemo.edit')}
-            </ElButton>
-            <ElButton type="danger">{t('exampleDemo.del')}</ElButton>
+            </BaseButton>
+            <BaseButton type="success" onClick={() => action(row, 'detail')}>
+              {t('exampleDemo.detail')}
+            </BaseButton>
+            <BaseButton type="danger">{t('exampleDemo.del')}</BaseButton>
           </>
         )
       }
@@ -154,6 +165,7 @@ const AddAction = () => {
 const save = async () => {
   const write = unref(writeRef)
   const formData = await write?.submit()
+  console.log(formData)
   if (formData) {
     saveLoading.value = true
     setTimeout(() => {
@@ -168,7 +180,7 @@ const save = async () => {
   <ContentWrap>
     <Search :schema="searchSchema" @reset="setSearchParams" @search="setSearchParams" />
     <div class="mb-10px">
-      <ElButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</ElButton>
+      <BaseButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</BaseButton>
     </div>
     <Table
       :columns="tableColumns"
@@ -183,11 +195,18 @@ const save = async () => {
   <Dialog v-model="dialogVisible" :title="dialogTitle">
     <Write v-if="actionType !== 'detail'" ref="writeRef" :current-row="currentRow" />
 
+    <Detail v-if="actionType === 'detail'" :current-row="currentRow" />
+
     <template #footer>
-      <ElButton v-if="actionType !== 'detail'" type="primary" :loading="saveLoading" @click="save">
+      <BaseButton
+        v-if="actionType !== 'detail'"
+        type="primary"
+        :loading="saveLoading"
+        @click="save"
+      >
         {{ t('exampleDemo.save') }}
-      </ElButton>
-      <ElButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</ElButton>
+      </BaseButton>
+      <BaseButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</BaseButton>
     </template>
   </Dialog>
 </template>

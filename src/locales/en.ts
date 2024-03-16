@@ -48,7 +48,9 @@ export default {
     lengthRange: 'The length should be between {min} and {max}',
     notSpace: 'Spaces are not allowed',
     notSpecialCharacters: 'Special characters are not allowed',
-    isEqual: 'The two are not equal'
+    isEqual: 'The two are not equal',
+    // 列设置
+    setting: 'Setting'
   },
   lock: {
     lockScreen: 'Lock screen',
@@ -119,7 +121,8 @@ export default {
     usernamePlaceholder: 'Please input username',
     passwordPlaceholder: 'Please input password',
     code: 'Verification code',
-    codePlaceholder: 'Please input verification code'
+    codePlaceholder: 'Please input verification code',
+    getCode: 'Get code'
   },
   router: {
     login: 'Login',
@@ -176,7 +179,17 @@ export default {
     multipleTabs: 'Multiple tabs',
     details: 'Details',
     iconPicker: 'Icon picker',
-    request: 'Request'
+    request: 'Request',
+    waterfall: 'Waterfall',
+    imageCropping: 'Image cropping',
+    videoPlayer: 'Video player',
+    // 表格视频预览
+    tableVideoPreview: 'Table video preview',
+    cardTable: 'Card table',
+    personalCenter: 'Personal center',
+    personal: 'Personal',
+    avatars: 'Avatars',
+    iAgree: 'I agree'
   },
   permission: {
     hasPermission: 'Please set the operation permission value'
@@ -323,7 +336,8 @@ export default {
     upload: 'Upload',
     // 用户头像
     userAvatar: 'User avatar',
-    iconPicker: 'Icon picker'
+    iconPicker: 'Icon picker',
+    iAgree: 'I agree'
   },
   guideDemo: {
     guide: 'Guide',
@@ -451,7 +465,9 @@ export default {
     fixedHeaderOrAuto: 'Fixed header or auto',
     getSelections: 'Get selections',
     preview: 'Preview',
-    showOrHiddenSortable: 'Show or hidden sortable'
+    showOrHiddenSortable: 'Show or hidden sortable',
+    videoPreview: 'Video preview',
+    cardTable: 'Card table'
   },
   richText: {
     richText: 'Rich text',
@@ -550,5 +566,9 @@ export default {
   inputPasswordDemo: {
     title: 'InputPassword',
     inputPasswordDes: 'Secondary packaging of Input components based on ElementPlus'
+  },
+  avatarsDemo: {
+    title:
+      'Avatar component for avatar list, secondary packaging based on element plus Avatar component'
   }
 }

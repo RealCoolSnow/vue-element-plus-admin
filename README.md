@@ -44,7 +44,7 @@ Online examples do not apply to menu filtering by default, but directly use Stat
 ## Preparation
 
 - [node](http://nodejs.org/) and [git](https://git-scm.com/) - Project development environment
-- [Vite4](https://vitejs.dev/) - Familiar with vite features
+- [Vite](https://vitejs.dev/) - Familiar with vite features
 - [Vue3](https://v3.vuejs.org/) - Familiar with Vue basic syntax
 - [TypeScript](https://www.typescriptlang.org/) - Familiar with the basic syntax of `TypeScript`
 - [Es6+](http://es6.ruanyifeng.com/) - Familiar with es6 basic syntax
@@ -86,6 +86,10 @@ pnpm run build:pro
 [CHANGELOG](./CHANGELOG.md)
 
 ## How to contribute
+
+<a href="https://github.com/kailong321200875/vue-element-plus-admin/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=kailong321200875/vue-element-plus-admin" />
+</a>
 
 You can [Raise an issue](https://github.com/kailong321200875/vue-element-plus-admin/issues/new) Or submit a Pull Request.
 
@@ -135,7 +139,13 @@ If you find this project helpful, welcome sponsorship to show your support~
 
 ## Group
 
-If you want to join the technical communication group for discussion, please add me as a friend
+If you want to join the technical communication group for discussion, please scan the code to join the group or add me as a friend
+
+### Group QR code
+
+<img src="https://github.com/kailong321200875/my-image/raw/master/WechatIMG435.jpg" />
+
+### My QR code
 
 <img src="https://github.com/kailong321200875/my-image/raw/master/me.jpg" />
 

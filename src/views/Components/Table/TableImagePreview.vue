@@ -40,8 +40,8 @@ const columns: TableColumn[] = [
           {cellValue === 1
             ? t('tableDemo.important')
             : cellValue === 2
-            ? t('tableDemo.good')
-            : t('tableDemo.commonly')}
+              ? t('tableDemo.good')
+              : t('tableDemo.commonly')}
         </ElTag>
       )
     }
@@ -77,6 +77,11 @@ getTableList()
 
 <template>
   <ContentWrap :title="t('router.PicturePreview')">
-    <Table :columns="columns" :data="tableDataList" :loading="loading" :preview="['image_uri']" />
+    <Table
+      :columns="columns"
+      :data="tableDataList"
+      :loading="loading"
+      :image-preview="['image_uri']"
+    />
   </ContentWrap>
 </template>

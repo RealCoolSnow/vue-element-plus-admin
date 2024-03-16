@@ -5,7 +5,9 @@ import {
   ElPagination,
   ComponentSize,
   ElTooltipProps,
-  ElImage
+  ElImage,
+  ElEmpty,
+  ElCard
 } from 'element-plus'
 import { defineComponent, PropType, ref, computed, unref, watch, onMounted } from 'vue'
 import { propTypes } from '@/utils/propTypes'
@@ -15,6 +17,9 @@ import { set, get } from 'lodash-es'
 import { CSSProperties } from 'vue'
 import { getSlot } from '@/utils/tsxHelper'
 import TableActions from './components/TableActions.vue'
+import { createVideoViewer } from '@/components/VideoPlayer'
+import { Icon } from '@/components/Icon'
+import { BaseButton } from '@/components/Button'
 
 export default defineComponent({
   name: 'Table',
@@ -53,8 +58,13 @@ export default defineComponent({
       type: Array as PropType<Recordable[]>,
       default: () => []
     },
-    // 是否自动预览
-    preview: {
+    // 图片自动预览字段数组
+    imagePreview: {
+      type: Array as PropType<string[]>,
+      default: () => []
+    },
+    // 视频自动预览字段数组
+    videoPreview: {
       type: Array as PropType<string[]>,
       default: () => []
     },
@@ -64,7 +74,7 @@ export default defineComponent({
     border: propTypes.bool.def(true),
     size: {
       type: String as PropType<ComponentSize>,
-      validator: (v: ComponentSize) => ['medium', 'small', 'mini'].includes(v)
+      validator: (v: ComponentSize) => ['default', 'small', 'large'].includes(v)
     },
     fit: propTypes.bool.def(true),
     showHeader: propTypes.bool.def(true),
@@ -181,7 +191,25 @@ export default defineComponent({
       default: 'fixed'
     },
     scrollbarAlwaysOn: propTypes.bool.def(false),
-    flexible: propTypes.bool.def(false)
+    flexible: propTypes.bool.def(false),
+    // 自定义内容
+    customContent: propTypes.bool.def(false),
+    cardBodyStyle: {
+      type: Object as PropType<CSSProperties>,
+      default: () => ({})
+    },
+    cardBodyClass: {
+      type: String as PropType<string>,
+      default: ''
+    },
+    cardWrapStyle: {
+      type: Object as PropType<CSSProperties>,
+      default: () => ({})
+    },
+    cardWrapClass: {
+      type: String as PropType<string>,
+      default: ''
+    }
   },
   emits: ['update:pageSize', 'update:currentPage', 'register', 'refresh'],
   setup(props, { attrs, emit, slots, expose }) {
@@ -228,7 +256,7 @@ export default defineComponent({
 
     const addColumn = (column: TableColumn, index?: number) => {
       const { columns } = unref(getProps)
-      if (index) {
+      if (index !== void 0) {
         columns.splice(index, 0, column)
       } else {
         columns.push(column)
@@ -249,6 +277,10 @@ export default defineComponent({
 
     const changSize = (size: ComponentSize) => {
       setProps({ size })
+    }
+
+    const confirmSetColumn = (columns: TableColumn[]) => {
+      setProps({ columns })
     }
 
     expose({
@@ -307,11 +339,13 @@ export default defineComponent({
       const bindValue: Recordable = { ...attrs, ...unref(getProps) }
       delete bindValue.columns
       delete bindValue.data
+      delete bindValue.align
       return bindValue
     })
 
     const renderTreeTableColumn = (columnsChildren: TableColumn[]) => {
-      const { align, headerAlign, showOverflowTooltip, preview } = unref(getProps)
+      const { align, headerAlign, showOverflowTooltip, imagePreview, videoPreview } =
+        unref(getProps)
       return columnsChildren.map((v) => {
         if (v.hidden) return null
         const props = { ...v } as any
@@ -322,20 +356,20 @@ export default defineComponent({
         const slots = {
           default: (...args: any[]) => {
             const data = args[0]
-            let isImageUrl = false
-            if (preview.length) {
-              isImageUrl = preview.some((item) => (item as string) === v.field)
-            }
+            let isPreview = false
+            isPreview =
+              imagePreview.some((item) => (item as string) === v.field) ||
+              videoPreview.some((item) => (item as string) === v.field)
 
             return children && children.length
               ? renderTreeTableColumn(children)
               : props?.slots?.default
-              ? props.slots.default(...args)
-              : v?.formatter
-              ? v?.formatter?.(data.row, data.column, get(data.row, v.field), data.$index)
-              : isImageUrl
-              ? renderPreview(get(data.row, v.field))
-              : get(data.row, v.field)
+                ? props.slots.default(...args)
+                : v?.formatter
+                  ? v?.formatter?.(data.row, data.column, get(data.row, v.field), data.$index)
+                  : isPreview
+                    ? renderPreview(get(data.row, v.field), v.field)
+                    : get(data.row, v.field)
           }
         }
         if (props?.slots?.header) {
@@ -356,17 +390,32 @@ export default defineComponent({
       })
     }
 
-    const renderPreview = (url: string) => {
+    const renderPreview = (url: string, field: string) => {
+      const { imagePreview, videoPreview } = unref(getProps)
       return (
         <div class="flex items-center">
-          <ElImage
-            src={url}
-            fit="cover"
-            class="w-[100%] h-100px"
-            lazy
-            preview-src-list={[url]}
-            preview-teleported
-          />
+          {imagePreview.includes(field) ? (
+            <ElImage
+              src={url}
+              fit="cover"
+              class="w-[100%]"
+              lazy
+              preview-src-list={[url]}
+              preview-teleported
+            />
+          ) : videoPreview.includes(field) ? (
+            <BaseButton
+              type="primary"
+              icon={<Icon icon="ep:video-play" />}
+              onClick={() => {
+                createVideoViewer({
+                  url
+                })
+              }}
+            >
+              预览
+            </BaseButton>
+          ) : null}
         </div>
       )
     }
@@ -381,7 +430,8 @@ export default defineComponent({
         headerAlign,
         showOverflowTooltip,
         reserveSelection,
-        preview
+        imagePreview,
+        videoPreview
       } = unref(getProps)
 
       return (columnsChildren || columns).map((v) => {
@@ -396,6 +446,7 @@ export default defineComponent({
               align={v.align || align}
               headerAlign={v.headerAlign || headerAlign}
               label={v.label}
+              fixed={v.fixed}
               width="65px"
             ></ElTableColumn>
           )
@@ -420,20 +471,20 @@ export default defineComponent({
             default: (...args: any[]) => {
               const data = args[0]
 
-              let isImageUrl = false
-              if (preview.length) {
-                isImageUrl = preview.some((item) => (item as string) === v.field)
-              }
+              let isPreview = false
+              isPreview =
+                imagePreview.some((item) => (item as string) === v.field) ||
+                videoPreview.some((item) => (item as string) === v.field)
 
               return children && children.length
                 ? renderTreeTableColumn(children)
                 : props?.slots?.default
-                ? props.slots.default(...args)
-                : v?.formatter
-                ? v?.formatter?.(data.row, data.column, get(data.row, v.field), data.$index)
-                : isImageUrl
-                ? renderPreview(get(data.row, v.field))
-                : get(data.row, v.field)
+                  ? props.slots.default(...args)
+                  : v?.formatter
+                    ? v?.formatter?.(data.row, data.column, get(data.row, v.field), data.$index)
+                    : isPreview
+                      ? renderPreview(get(data.row, v.field), v.field)
+                      : get(data.row, v.field)
             }
           }
           if (props?.slots?.header) {
@@ -466,19 +517,61 @@ export default defineComponent({
 
       return (
         <div v-loading={unref(getProps).loading}>
-          {unref(getProps).showAction ? (
-            <TableActions
-              columns={unref(getProps).columns}
-              onChangSize={changSize}
-              onRefresh={refresh}
-            />
-          ) : null}
-          <ElTable ref={elTableRef} data={unref(getProps).data} {...unref(getBindValue)}>
-            {{
-              default: () => renderTableColumn(),
-              ...tableSlots
-            }}
-          </ElTable>
+          {unref(getProps).customContent ? (
+            <div class="flex flex-wrap">
+              {unref(getProps)?.data?.length ? (
+                unref(getProps)?.data.map((item) => {
+                  const cardSlots = {
+                    default: () => {
+                      return getSlot(slots, 'content', item)
+                    }
+                  }
+                  if (getSlot(slots, 'content-header')) {
+                    cardSlots['header'] = () => {
+                      return getSlot(slots, 'content-header', item)
+                    }
+                  }
+                  if (getSlot(slots, 'content-footer')) {
+                    cardSlots['footer'] = () => {
+                      return getSlot(slots, 'content-footer', item)
+                    }
+                  }
+                  return (
+                    <ElCard
+                      shadow="hover"
+                      class={unref(getProps).cardWrapClass}
+                      style={unref(getProps).cardWrapStyle}
+                      bodyClass={unref(getProps).cardBodyClass}
+                      bodyStyle={unref(getProps).cardBodyStyle}
+                    >
+                      {cardSlots}
+                    </ElCard>
+                  )
+                })
+              ) : (
+                <div class="flex flex-1 justify-center">
+                  <ElEmpty description="暂无数据" />
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              {unref(getProps).showAction && !unref(getProps).customContent ? (
+                <TableActions
+                  columns={unref(getProps).columns}
+                  onChangSize={changSize}
+                  onRefresh={refresh}
+                  onConfirm={confirmSetColumn}
+                />
+              ) : null}
+              <ElTable ref={elTableRef} data={unref(getProps).data} {...unref(getBindValue)}>
+                {{
+                  default: () => renderTableColumn(),
+                  ...tableSlots
+                }}
+              </ElTable>
+            </>
+          )}
           {unref(getProps).pagination ? (
             <ElPagination
               v-model:pageSize={pageSizeRef.value}

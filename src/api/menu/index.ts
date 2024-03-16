@@ -1,5 +1,5 @@
-import request from '@/config/axios'
+import request from '@/axios'
 
 export const getMenuListApi = () => {
-  return request.get({ url: '/menu/list' })
+  return request.get({ url: '/mock/menu/list' })
 }

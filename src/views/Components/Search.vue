@@ -3,7 +3,6 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Search } from '@/components/Search'
 import { reactive, ref, unref } from 'vue'
-import { ElButton } from 'element-plus'
 import { getDictOneApi } from '@/api/common'
 import { FormSchema } from '@/components/Form'
 import { useSearch } from '@/hooks/web/useSearch'
@@ -11,7 +10,87 @@ import { useSearch } from '@/hooks/web/useSearch'
 const { t } = useI18n()
 
 const { searchRegister, searchMethods } = useSearch()
-const { setSchema, setProps, setValues } = searchMethods
+const { setSchema, setProps, setValues, getFormData } = searchMethods
+
+const treeSelectData = [
+  {
+    value: '1',
+    label: 'Level one 1',
+    children: [
+      {
+        value: '1-1',
+        label: 'Level two 1-1',
+        children: [
+          {
+            value: '1-1-1',
+            label: 'Level three 1-1-1'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    value: '2',
+    label: 'Level one 2',
+    children: [
+      {
+        value: '2-1',
+        label: 'Level two 2-1',
+        children: [
+          {
+            value: '2-1-1',
+            label: 'Level three 2-1-1'
+          }
+        ]
+      },
+      {
+        value: '2-2',
+        label: 'Level two 2-2',
+        children: [
+          {
+            value: '2-2-1',
+            label: 'Level three 2-2-1'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    value: '3',
+    label: 'Level one 3',
+    children: [
+      {
+        value: '3-1',
+        label: 'Level two 3-1',
+        children: [
+          {
+            value: '3-1-1',
+            label: 'Level three 3-1-1'
+          }
+        ]
+      },
+      {
+        value: '3-2',
+        label: 'Level two 3-2',
+        children: [
+          {
+            value: '3-2-1',
+            label: 'Level three 3-2-1'
+          }
+        ]
+      }
+    ]
+  }
+]
+
+// 模拟远程加载
+const getTreeSelectData = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(treeSelectData)
+    }, 3000)
+  })
+}
 
 const schema = reactive<FormSchema[]>([
   {
@@ -125,6 +204,16 @@ const schema = reactive<FormSchema[]>([
     field: 'field18',
     label: t('formDemo.input'),
     component: 'Input'
+  },
+  {
+    field: 'field19',
+    label: `${t('formDemo.treeSelect')}`,
+    component: 'TreeSelect',
+    // 远程加载option
+    optionApi: async () => {
+      const res = await getTreeSelectData()
+      return res
+    }
   }
 ])
 
@@ -163,7 +252,9 @@ const getDictOne = async () => {
   }
 }
 
-const handleSearch = (data: any) => {
+const handleSearch = async (data: any) => {
+  const formData = await getFormData()
+  console.log(formData)
   console.log(data)
 }
 
@@ -215,37 +306,37 @@ const changeResetLoading = () => {
     :title="`${t('searchDemo.search')} ${t('searchDemo.operate')}`"
     style="margin-bottom: 20px"
   >
-    <ElButton @click="changeGrid(true)">{{ t('searchDemo.grid') }}</ElButton>
-    <ElButton @click="changeGrid(false)">
+    <BaseButton @click="changeGrid(true)">{{ t('searchDemo.grid') }}</BaseButton>
+    <BaseButton @click="changeGrid(false)">
       {{ t('searchDemo.restore') }} {{ t('searchDemo.grid') }}
-    </ElButton>
+    </BaseButton>
 
-    <ElButton @click="changeLayout">
+    <BaseButton @click="changeLayout">
       {{ t('searchDemo.button') }} {{ t('searchDemo.position') }}
-    </ElButton>
+    </BaseButton>
 
-    <ElButton @click="changePosition('left')">
+    <BaseButton @click="changePosition('left')">
       {{ t('searchDemo.bottom') }} {{ t('searchDemo.position') }}-{{ t('searchDemo.left') }}
-    </ElButton>
-    <ElButton @click="changePosition('center')">
+    </BaseButton>
+    <BaseButton @click="changePosition('center')">
       {{ t('searchDemo.bottom') }} {{ t('searchDemo.position') }}-{{ t('searchDemo.center') }}
-    </ElButton>
-    <ElButton @click="changePosition('right')">
+    </BaseButton>
+    <BaseButton @click="changePosition('right')">
       {{ t('searchDemo.bottom') }} {{ t('searchDemo.position') }}-{{ t('searchDemo.right') }}
-    </ElButton>
-    <ElButton @click="getDictOne">
+    </BaseButton>
+    <BaseButton @click="getDictOne">
       {{ t('formDemo.select') }} {{ t('searchDemo.dynamicOptions') }}
-    </ElButton>
-    <ElButton @click="delRadio">{{ t('searchDemo.deleteRadio') }}</ElButton>
-    <ElButton @click="restoreRadio">{{ t('searchDemo.restoreRadio') }}</ElButton>
-    <ElButton @click="setValue">{{ t('formDemo.setValue') }}</ElButton>
+    </BaseButton>
+    <BaseButton @click="delRadio">{{ t('searchDemo.deleteRadio') }}</BaseButton>
+    <BaseButton @click="restoreRadio">{{ t('searchDemo.restoreRadio') }}</BaseButton>
+    <BaseButton @click="setValue">{{ t('formDemo.setValue') }}</BaseButton>
 
-    <ElButton @click="changeSearchLoading">
+    <BaseButton @click="changeSearchLoading">
       {{ t('searchDemo.search') }} {{ t('searchDemo.loading') }}
-    </ElButton>
-    <ElButton @click="changeResetLoading">
+    </BaseButton>
+    <BaseButton @click="changeResetLoading">
       {{ t('searchDemo.reset') }} {{ t('searchDemo.loading') }}
-    </ElButton>
+    </BaseButton>
   </ContentWrap>
 
   <ContentWrap :title="t('searchDemo.search')" :message="t('searchDemo.searchDes')">
